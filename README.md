@@ -27,18 +27,18 @@ DB_NAME=webScraping
 PORT=3000
 
 ##Scraper disponibles sin ventana emergente
--Citaciones ANT
--Citacion juficial
--Consejo de la Judicatura
--Impedimentos cargos públicos
--Pensión Alimenticia
--Senescyt
--Superintendencias de Compañias (superCias)
+  -Citaciones ANT
+  -Citacion juficial
+  -Consejo de la Judicatura
+  -Impedimentos cargos públicos
+  -Pensión Alimenticia
+  -Senescyt
+  -Superintendencias de Compañias (superCias)
 
 ##Scraper disponibles con ventana emergente
--Certificados IESS
--Consulta SRI
--Procesos Judiciales
--Antecedentes Penales
--Interpol
--Deudas SRI
+  -Certificados IESS
+  -Consulta SRI
+  -Procesos Judiciales
+  -Antecedentes Penales
+  -Interpol
+  -Deudas SRI
