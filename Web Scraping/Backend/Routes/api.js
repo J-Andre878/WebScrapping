@@ -2,7 +2,7 @@ import express from 'express'
 import { validateCedula, validateRuc, validateCedulaOrRuc, validateSearchParams } from '../Middleware/validation.js'
 
 // Importar controllers
-//import { consultarCertificadoIESS } from '../Controllers/certificadosIESSController.js'
+import { consultarCertificadoIESS } from '../Controllers/certificadosIESS.js'
 import { consultarCitacionesANT } from '../Controllers/citacionesANT.js'
 import { consultarCitacionesJudiciales } from '../Controllers/citacionJudicial.js'
 import { consultarConsejoJudicatura } from '../Controllers/consejoJudicatura.js'
@@ -20,7 +20,7 @@ import { consultarAntecedentesPenales } from '../Controllers/antecedentesPenales
 const router = express.Router()
 
 // Rutas con validación y controllers
-//router.post('/certificados-iess', validateCedula, consultarCertificadoIESS)
+router.post('/certificado-iess', validateCedula, consultarCertificadoIESS)
 router.post('/citaciones-ant', validateCedula, consultarCitacionesANT)
 router.post('/citaciones-judiciales', validateCedula, consultarCitacionesJudiciales)
 router.post('/consejo-judicatura', validateSearchParams, consultarConsejoJudicatura)
@@ -48,7 +48,7 @@ router.get('/collections', (req, res) => {
   res.json({
     success: true,
     collections: [
-      //'certificados-iess',
+      'certificados-iess',
       'citaciones-ant',
       'citaciones-judiciales',
       'consejo-judicatura',

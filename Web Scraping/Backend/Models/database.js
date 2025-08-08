@@ -203,6 +203,24 @@ export const DatabaseOperations = {
   // Crear índices para optimizar consultas
   async createIndexes() {
     try {
+      // Verificar si tenemos permisos para crear índices
+      const testCollection = getCollection('test_auth')
+      
+      try {
+        await testCollection.createIndex({ test: 1 })
+        await testCollection.drop() // Limpiar la colección de prueba
+      } catch (authError) {
+        if (authError.code === 13) { // Unauthorized
+          console.log('⚠️  Saltando creación de índices - MongoDB requiere autenticación')
+          console.log('💡 Para resolver esto:')
+          console.log('   1. Configura MONGODB_URI con credenciales en .env')
+          console.log('   2. O ejecuta MongoDB sin autenticación')
+          console.log('   3. O crea los índices manualmente')
+          return
+        }
+        throw authError
+      }
+
       // Índices para consultas por cédula
       const cedulaCollections = [
         Collections.ANTECEDENTES_PENALES,
@@ -219,6 +237,16 @@ export const DatabaseOperations = {
         await collection.createIndex({ cedula: 1 }, { unique: true })
         await collection.createIndex({ fechaActualizacion: -1 })
       }
+
+      // Índices específicos para certificados IESS
+      const certificadosIESSCollection = getCollection(Collections.CERTIFICADOS_IESS)
+      await certificadosIESSCollection.createIndex({ cedula: 1 }, { unique: true })
+      await certificadosIESSCollection.createIndex({ fechaActualizacion: -1 })
+      await certificadosIESSCollection.createIndex({ registradoComoEmpleador: 1 })
+      await certificadosIESSCollection.createIndex({ estadoActividad: 1 })
+      await certificadosIESSCollection.createIndex({ estado: 1 })
+      await certificadosIESSCollection.createIndex({ error: 1 }, { sparse: true })
+      await certificadosIESSCollection.createIndex({ fechaConsulta: -1 })
 
       // Índice para RUC en datos SRI
       const sriCollection = getCollection(Collections.DATOS_SRI)
@@ -237,29 +265,34 @@ export const DatabaseOperations = {
 
       // Índices para Interpol
       const interpolCollection = getCollection(Collections.INTERPOL)
-    // Primero eliminar documentos con clave null o vacía
-    await interpolCollection.deleteMany({ 
-      $or: [
-        { clave: null }, 
-        { clave: "" }, 
-        { clave: { $exists: false } }
-      ] 
-    })
-    
-    // Crear índices sin unique constraint problemático
-    await interpolCollection.createIndex({ clave: 1 }, { 
-      unique: true,
-      partialFilterExpression: { 
-        clave: { $exists: true, $type: "string" } 
-      }
-    })
-    await interpolCollection.createIndex({ fechaConsulta: -1 })
-    await interpolCollection.createIndex({ homonimo: 1 })
-    await interpolCollection.createIndex({ cantidadResultados: 1 })
-    
+      // Primero eliminar documentos con clave null o vacía
+      await interpolCollection.deleteMany({ 
+        $or: [
+          { clave: null }, 
+          { clave: "" }, 
+          { clave: { $exists: false } }
+        ] 
+      })
+      
+      // Crear índices sin unique constraint problemático
+      await interpolCollection.createIndex({ clave: 1 }, { 
+        unique: true,
+        partialFilterExpression: { 
+          clave: { $exists: true, $type: "string" } 
+        }
+      })
+      await interpolCollection.createIndex({ fechaConsulta: -1 })
+      await interpolCollection.createIndex({ homonimo: 1 })
+      await interpolCollection.createIndex({ cantidadResultados: 1 })
+      
       console.log('✅ Índices de base de datos creados exitosamente')
     } catch (error) {
-      console.error('❌ Error creando índices:', error)
+      if (error.code === 13) { // Unauthorized
+        console.log('⚠️  No se pudieron crear los índices - falta autenticación')
+        console.log('💡 La aplicación funcionará sin índices, pero más lentamente')
+      } else {
+        console.error('❌ Error creando índices:', error)
+      }
     }
   },
 
@@ -300,6 +333,61 @@ export const AntecedentesPenalesModel = {
   async getConsultasConAntecedentes() {
     const collection = getCollection(Collections.ANTECEDENTES_PENALES)
     return await collection.find({ tieneAntecedentes: true }).sort({ fechaConsulta: -1 }).toArray()
+  }
+}
+
+export const CertificadosIESSModel = {
+  async save(cedula, datosCertificado) {
+    return await DatabaseOperations.upsert(
+      Collections.CERTIFICADOS_IESS,
+      { cedula },
+      datosCertificado
+    )
+  },
+
+  async findByCedula(cedula) {
+    return await DatabaseOperations.findByCedula(Collections.CERTIFICADOS_IESS, cedula)
+  },
+
+  async getAllConsultas() {
+    const collection = getCollection(Collections.CERTIFICADOS_IESS)
+    return await collection.find({}).sort({ fechaConsulta: -1 }).toArray()
+  },
+
+  async getEmpleadoresRegistrados() {
+    const collection = getCollection(Collections.CERTIFICADOS_IESS)
+    return await collection.find({ registradoComoEmpleador: true }).sort({ fechaConsulta: -1 }).toArray()
+  },
+
+  async getEmpleadoresActivos() {
+    const collection = getCollection(Collections.CERTIFICADOS_IESS)
+    return await collection.find({ 
+      registradoComoEmpleador: true,
+      estadoActividad: { $regex: /activo/i }
+    }).sort({ fechaConsulta: -1 }).toArray()
+  },
+
+  async getEstadisticas() {
+    const collection = getCollection(Collections.CERTIFICADOS_IESS)
+    
+    const totalConsultas = await collection.countDocuments()
+    const consultasExitosas = await collection.countDocuments({ estado: 'exitoso' })
+    const empleadoresRegistrados = await collection.countDocuments({ registradoComoEmpleador: true })
+    const empleadoresActivos = await collection.countDocuments({ 
+      registradoComoEmpleador: true,
+      estadoActividad: { $regex: /activo/i }
+    })
+    const consultasConError = await collection.countDocuments({ error: { $exists: true } })
+    
+    return {
+      totalConsultas,
+      consultasExitosas,
+      empleadoresRegistrados,
+      empleadoresActivos,
+      consultasConError,
+      tasaExito: totalConsultas > 0 ? (consultasExitosas / totalConsultas * 100).toFixed(2) : 0,
+      porcentajeEmpleadores: totalConsultas > 0 ? (empleadoresRegistrados / totalConsultas * 100).toFixed(2) : 0
+    }
   }
 }
 
