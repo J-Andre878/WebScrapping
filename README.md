@@ -26,7 +26,7 @@ MONGODB_URI=mongodb://localhost:27017
 DB_NAME=webScraping
 PORT=3000
 
-#Scraper disponibles sin ventana emergente
+##Scraper disponibles sin ventana emergente
 -Citaciones ANT
 -Citacion juficial
 -Consejo de la Judicatura
@@ -35,7 +35,7 @@ PORT=3000
 -Senescyt
 -Superintendencias de Compañias (superCias)
 
-#Scraper disponibles con ventana emergente
+##Scraper disponibles con ventana emergente
 -Certificados IESS
 -Consulta SRI
 -Procesos Judiciales
