@@ -210,7 +210,18 @@ export function AntecedentesPenalesPage() {
                   />
                   {errors.cedula && <p className="text-sm text-destructive">{errors.cedula.message}</p>}
                 </div>
-
+                <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <div className="flex items-start gap-3">
+                    <span className="text-yellow-600 text-xl">⏱️</span>
+                    <div>
+                      <h4 className="font-semibold text-yellow-800 mb-1">Tiempo de Procesamiento</h4>
+                      <p className="text-sm text-yellow-700">
+                        Esta consulta puede tomar varios segundos debido al procesamiento 
+                        automático del captcha requerido por el sitio web.
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Consultando..." : "Consultar Antecedentes"}
                 </Button>

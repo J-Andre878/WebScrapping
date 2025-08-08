@@ -34,7 +34,7 @@ export const obtenerAntecedentesPenales = async (cedula) => {
     })
 
     // Aceptar términos
-    await page.waitForSelector('button.ui-button-text-only >> text=Aceptar', { timeout: 10000 })
+    await page.waitForSelector('button.ui-button-text-only >> text=Aceptar', { timeout: 20000 })
     await page.click('button.ui-button-text-only >> text=Aceptar')
 
     // Llenar cédula
@@ -49,7 +49,7 @@ export const obtenerAntecedentesPenales = async (cedula) => {
     await page.click('#btnSig2')
 
     // Obtener resultados
-    await page.waitForSelector('#dvAntecedent1', { timeout: 20000 })
+    await page.waitForSelector('#dvAntecedent1', { timeout: 0 })
 
     const resultado = await page.textContent('#dvAntecedent1')
     const nombre = await page.textContent('#dvName1')
