@@ -77,6 +77,17 @@ export function SriDeudasPage() {
                   />
                   {errors.ruc && <p className="text-sm text-destructive">{errors.ruc.message}</p>}
                 </div>
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-start gap-3">
+                    <span className="text-blue-600 text-xl">ℹ️</span>
+                    <div>
+                      <h4 className="font-semibold text-blue-800 mb-1">Información Importante</h4>
+                      <p className="text-sm text-blue-700">
+                        Esta página puede necesitar mas de un intento
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Consultando..." : "Consultar"}
                 </Button>
