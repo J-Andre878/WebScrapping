@@ -52,7 +52,8 @@ export function SuperCiasPage() {
     setSelectedTable(null)
 
     try {
-      const response = await fetch("http://localhost:3001/api/supercias-empresas", {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ;
+      const response = await fetch(`${apiBaseUrl}/api/supercias-empresas`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

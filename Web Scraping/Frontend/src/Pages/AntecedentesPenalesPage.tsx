@@ -42,7 +42,8 @@ export function AntecedentesPenalesPage() {
     setAntecedentesPenalesData(null)
 
     try {
-      const response = await fetch("http://localhost:3001/api/antecedentes-penales", {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ;
+      const response = await fetch(`${apiBaseUrl}/api/antecedentes-penales`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

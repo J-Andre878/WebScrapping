@@ -1,0 +1,42 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: web-scraping-mongodb
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=webScraping
+    networks:
+      - web-scraping-network
+    command: mongod --noauth
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  frontend:
+    build:
+      context: "./Web Scraping/Frontend"
+      dockerfile: Dockerfile
+    container_name: web-scraping-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - web-scraping-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mongodb_data:
+
+networks:
+  web-scraping-network:
+    driver: bridge

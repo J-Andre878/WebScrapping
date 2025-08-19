@@ -53,7 +53,8 @@ export function CitacionJudicialPage() {
     setCitacionesData(null)
 
     try {
-      const response = await fetch("http://localhost:3001/api/citaciones-judiciales", {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ;
+      const response = await fetch(`${apiBaseUrl}/api/citaciones-judiciales`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

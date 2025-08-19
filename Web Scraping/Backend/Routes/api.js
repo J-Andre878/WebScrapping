@@ -13,7 +13,7 @@ import { consultarProcesosJudiciales } from '../Controllers/procesosJudiciales.j
 import { consultarSenescyt } from '../Controllers/senescyt.js'
 import { consultarSRIDeudas } from '../Controllers/sriDeudas.js'
 import { consultarSuperciasEmpresas } from '../Controllers/superCias.js'
-import { consultarInterpol } from "../Controllers/interpol.js";
+import { consultarInterpol } from "../Controllers/interpol.js"
 import { consultarAntecedentesPenales } from '../Controllers/antecedentesPenales.js'
 
 
@@ -25,7 +25,7 @@ router.post('/citaciones-ant', validateCedula, consultarCitacionesANT)
 router.post('/citaciones-judiciales', validateCedula, consultarCitacionesJudiciales)
 router.post('/consejo-judicatura', validateSearchParams, consultarConsejoJudicatura)
 router.post('/consulta-sri', validateRuc, consultarSRI)
-router.post('/impedimentos-cargos-publicos', consultarImpedimentos) // No requiere validación
+router.post('/impedimentos-cargos-publicos', consultarImpedimentos)
 router.post('/pension-alimenticia', validateCedula, consultarPensionAlimenticia)
 router.post('/procesos-judiciales', validateCedula, consultarProcesosJudiciales)
 router.post('/senescyt', validateCedula, consultarSenescyt)

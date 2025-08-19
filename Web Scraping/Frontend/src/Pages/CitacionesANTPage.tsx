@@ -55,7 +55,8 @@ export function CitacionesANTPage() {
     setCitacionesData(null)
 
     try {
-      const response = await fetch("http://localhost:3001/api/citaciones-ant", {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ;
+      const response = await fetch(`${apiBaseUrl}/api/citaciones-ant`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -29,7 +29,8 @@ export function ImpedimentosCargosPage() {
     setImpedimentosData(null)
 
     try {
-      const response = await fetch("http://localhost:3001/api/impedimentos-cargos-publicos", {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${apiBaseUrl}/api/impedimentos-cargos-publicos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

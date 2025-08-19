@@ -42,7 +42,8 @@ export function InterpolPage() {
     setCantidadResultados(0)
 
     try {
-      const response = await fetch("http://localhost:3001/api/interpol", {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${apiBaseUrl}/api/interpol`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre: data.nombre, apellido: data.apellido }),
