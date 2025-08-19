@@ -1,21 +1,29 @@
 import { chromium } from "playwright"
 import fetch from "node-fetch"
-import { PDFDocument } from 'pdf-lib'
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
 import { CertificadosIESSModel } from '../Models/database.js'
 
-// Función auxiliar para extraer texto de PDF usando pdf-lib
+// Función auxiliar para extraer texto de PDF usando pdfjs-dist
 async function extractTextFromPDF(buffer) {
-  const pdfDoc = await PDFDocument.load(buffer)
-  const pages = pdfDoc.getPages()
-  let fullText = ""
-  
-  for (const page of pages) {
-    const { width, height } = page.getSize()
-    const textContent = await page.getTextContent()
-    fullText += textContent + " "
+  try {
+    const typedArray = new Uint8Array(buffer)
+    const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise
+    
+    let fullText = ''
+    
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum)
+      const textContent = await page.getTextContent()
+      
+      const pageText = textContent.items.map(item => item.str).join(' ')
+      fullText += pageText + ' '
+    }
+    
+    return fullText.trim()
+  } catch (error) {
+    console.error('Error al extraer texto del PDF:', error)
+    throw new Error('No se pudo extraer el texto del PDF')
   }
-  
-  return fullText
 }
 
 export const obtenerDatosCertificadoIESS = async (cedula, fechaNacimiento) => {

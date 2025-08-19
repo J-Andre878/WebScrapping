@@ -96,7 +96,7 @@ export const validateCedulaOrRuc = (req, res, next) => {
 }
 
 export const validateSearchParams = (req, res, next) => {
-  const { nombre} = req.body
+  const { nombre, tipoBusqueda } = req.body
   
   if (!nombre) {
     return res.status(400).json({
@@ -105,12 +105,15 @@ export const validateSearchParams = (req, res, next) => {
     })
   }
   
-  const tiposValidos = ['PROVINCIAS', 'INSTITUCIONES']
-  if (!tiposValidos.includes(tipoBusqueda.toUpperCase())) {
-    return res.status(400).json({
-      success: false,
-      error: 'Tipo de búsqueda inválido. Use: PROVINCIAS o INSTITUCIONES'
-    })
+  // tipoBusqueda es opcional, si no se proporciona, se omite la validación
+  if (tipoBusqueda) {
+    const tiposValidos = ['PROVINCIAS', 'INSTITUCIONES']
+    if (!tiposValidos.includes(tipoBusqueda.toUpperCase())) {
+      return res.status(400).json({
+        success: false,
+        error: 'Tipo de búsqueda inválido. Use: PROVINCIAS o INSTITUCIONES'
+      })
+    }
   }
   
   next()
