@@ -2,7 +2,7 @@
 Proyecto que realiza Web scrapping de paginas como la senecyt, SUPA, Sercop, etc.
 
 ## Requisitos
--Node.js
+-Node.js (version +20.16.0)
 -npm
 -MongoDB
 
@@ -14,10 +14,11 @@ Proyecto que realiza Web scrapping de paginas como la senecyt, SUPA, Sercop, etc
 ruta: webScraping/Backend
 npm install
 
-3. Instalar dependencias desde el frontend
+3. Levantar servicios docker del frontend
 
-ruta: webScraping/Frontend
-npm install
+ruta: raiz del proyecto (Web Scraping)
+docker-compose build
+docker-compose up -d
 
 ## Configuracion de variable de entorno
 En la carpeta Backend editar el archivo `.env` si es necesario
