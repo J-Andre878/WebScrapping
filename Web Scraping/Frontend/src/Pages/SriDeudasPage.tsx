@@ -25,7 +25,8 @@ export function SriDeudasPage() {
     setError(null)
 
     try {
-      const response = await fetch("http://localhost:3001/api/sri-deudas", {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ;
+      const response = await fetch(`${apiBaseUrl}/api/sri-deudas`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ruc: data.ruc }),

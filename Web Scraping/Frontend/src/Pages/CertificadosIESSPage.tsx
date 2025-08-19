@@ -82,12 +82,13 @@ export function CertificadosIESSPage() {
       // Convertir fecha al formato requerido por el backend
       const fechaBackend = convertirFechaParaBackend(data.fechaNacimiento)
       
-      const response = await fetch("http://localhost:3001/api/certificado-iess", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ;
+    const response = await fetch(`${apiBaseUrl}/api/certificado-iess`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ 
           cedula: data.cedula,
           fechaNacimiento: fechaBackend
         }),

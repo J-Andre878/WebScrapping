@@ -120,8 +120,8 @@ export function ConsejoJudicaturaPage() {
         provinciaInstitucion: data.tipoBusqueda === "INSTITUCIONES" ? data.institucion : data.provincia,
         canton: data.tipoBusqueda === "PROVINCIAS" ? data.canton : null
       }
-
-      const response = await fetch("http://localhost:3001/api/consejo-judicatura", {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ;
+      const response = await fetch(`${apiBaseUrl}/api/consejo-judicatura`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

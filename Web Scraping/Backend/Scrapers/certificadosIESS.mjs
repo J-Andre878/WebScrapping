@@ -1,19 +1,18 @@
 import { chromium } from "playwright"
 import fetch from "node-fetch"
-import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs"
+import { PDFDocument } from 'pdf-lib'
 import { CertificadosIESSModel } from '../Models/database.js'
 
-// Función auxiliar para extraer texto de PDF usando pdfjs-dist
+// Función auxiliar para extraer texto de PDF usando pdf-lib
 async function extractTextFromPDF(buffer) {
-  const data = new Uint8Array(buffer)
-  const pdf = await pdfjs.getDocument({ data }).promise
+  const pdfDoc = await PDFDocument.load(buffer)
+  const pages = pdfDoc.getPages()
   let fullText = ""
   
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i)
+  for (const page of pages) {
+    const { width, height } = page.getSize()
     const textContent = await page.getTextContent()
-    const pageText = textContent.items.map(item => item.str).join(" ")
-    fullText += pageText + " "
+    fullText += textContent + " "
   }
   
   return fullText
